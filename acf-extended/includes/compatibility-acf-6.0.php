@@ -9,9 +9,9 @@ if(!acfe_is_acf_6()){
     return;
 }
 
-if(!class_exists('acfe_admin_compatibility')):
+if(!class_exists('acfe_compatibility_acf_6')):
 
-class acfe_admin_compatibility{
+class acfe_compatibility_acf_6{
     
     /**
      * construct
@@ -170,8 +170,6 @@ class acfe_admin_compatibility{
             'edit-acf-field-group-category',
             'edit-acfe-dbt',
             'acfe-dbt',
-            'edit-acfe-dop',
-            'acfe-dop',
             'edit-acfe-template',
             'acfe-template',
             'edit-acfe-form',
@@ -269,6 +267,6 @@ class acfe_admin_compatibility{
     
 }
 
-new acfe_admin_compatibility();
+acf_new_instance('acfe_compatibility_acf_6');
 
 endif;

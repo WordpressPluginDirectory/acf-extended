@@ -1082,6 +1082,7 @@ function acfe_unarray($val){
 
 /**
  * acfe_get_ip
+ *
  * @return mixed
  */
 function acfe_get_ip(){
@@ -1287,12 +1288,31 @@ function acfe_unparse_types($v, $filters = array('int', 'bool', 'null')){
 function acfe_redirect($location, $status = 302){
     
     // filter
-    $redirect = apply_filters('acfe/redirect', $location, $status);
+    $location = apply_filters('acfe/redirect', $location, $status);
     
-    if($redirect){
-        wp_redirect($location);
-        exit;
+    // do not redirect
+    if($location === false){
+        return;
     }
+    
+    // sanitize
+    $location = trim($location);
+    
+    // empty location
+    // redirect to 'current page'
+    if(empty($location)){
+        
+        global $wp;
+        if(!isset($wp->request)){
+            return;
+        }
+        
+        $location = home_url($wp->request);
+        
+    }
+    
+    wp_redirect($location);
+    exit;
     
 }
 
@@ -1339,5 +1359,38 @@ function acfe_str_replace_first($search, $replace, $subject, $delete = false){
     }
     
     return $subject;
+    
+}
+
+
+/**
+ * acfe_get_array_flatten
+ *
+ * @param $array
+ * @param $flattened
+ *
+ * @return array|mixed
+ */
+function acfe_get_array_flatten($array = array(), $flattened = array()){
+    
+    // bail early if no array
+    if(empty($array) || !is_array($array)){
+        return $flattened;
+    }
+    
+    // loop choices
+    foreach($array as $key => $value){
+        
+        // value must be an array
+        if(is_array($value)){
+            $flattened = acfe_get_array_flatten($value, $flattened);
+        }else{
+            $flattened[ $key ] = $value;
+        }
+        
+    }
+    
+    // return
+    return $flattened;
     
 }
